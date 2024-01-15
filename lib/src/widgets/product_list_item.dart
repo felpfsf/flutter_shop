@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_shop/src/models/product.dart';
+import 'package:flutter_shop/src/providers/favorite_product.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class ProductListItem extends ConsumerWidget {
@@ -15,6 +16,8 @@ class ProductListItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final favoriteProductsList = ref.watch(favoriteProductsProvider);
+    final isFavorited = favoriteProductsList.contains(product);
     return Card(
       margin: const EdgeInsets.all(8),
       shape: RoundedRectangleBorder(
@@ -40,14 +43,16 @@ class ProductListItem extends ConsumerWidget {
             Positioned(
               top: 5,
               right: 5,
-              child: Container(
-                // decoration: BoxDecoration(
-                //   color: Colors.red,
-                //   borderRadius: BorderRadius.circular(100),
-                // ),
-                child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.favorite),
+              child: IconButton(
+                onPressed: () {
+                  ref
+                      .read(favoriteProductsProvider.notifier)
+                      .toggleFavoriteProductStatus(product);
+                },
+                icon: Icon(
+                  isFavorited ? Icons.favorite : Icons.favorite_outline,
+                  color: Colors.amber,
+                  size: 32,
                 ),
               ),
             ),
